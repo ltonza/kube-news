@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-news
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kube-news
+  template:
+    metadata:
+      labels:
+        app: kube-news
+    spec:
+      containers:
+        - name: site-kube-news
+          image: ltonza/kube-news:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "postgre"
+            - name: DB_DATABASE
+              value: "kubenews"
+            - name: DB_USERNAME
+              value: "kubenews"
+            - name: DB_PASSWORD
+              value: "Pg#123"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-news
+spec:
+  selector:
+    app: kube-news
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30001
+  type: NodePort
