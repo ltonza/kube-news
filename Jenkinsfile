@@ -4,7 +4,7 @@ pipeline {
         stage ('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build("ltonza/kube-news:v${env.BUILD_ID}", '-f ./src/Dockerfile ./src')
+                    dockerImage = docker.build("ltonza/kube-news:v${env.BUILD_ID}", '-f ./src/Dockerfile ./src')
                 }
             }
         }
