@@ -29,8 +29,11 @@ pipeline {
         stage ('Deploy Kubernetes') {
             steps {
                 withKubeConfig ([credentialsId: 'kubeconfig']){
-                    sh 'echo "$IMAGE_NAME:$TAG_VERSION"'
+                    //Deploy do banco de dados
+                    sh 'kubectl apply -f ./k8s/deployment-db.yaml'
+                    //Atualiza a tag da imagem
                     sh 'sed -i "s#$IMAGE_NAME:.*#$IMAGE_NAME:$TAG_VERSION#g" ./k8s/deployment.yaml'
+                    //Deploy da nova imagem da aplicação
                     sh 'kubectl apply -f ./k8s/deployment.yaml'
                 }
             }
