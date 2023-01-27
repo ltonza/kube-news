@@ -30,7 +30,7 @@ pipeline {
             steps {
                 withKubeConfig ([credentialsId: 'kubeconfig']){
                     sh 'echo "$IMAGE_NAME:$TAG_VERSION"'
-                    sh 'sed -i "s#\($IMAGE_NAME\):.*#\1:$TAG_VERSION#g" ./k8s/deployment.yaml'
+                    sh 'sed -i "s#$IMAGE_NAME:.*#$IMAGE_NAME:$TAG_VERSION#g" ./k8s/deployment.yaml'
                     sh 'kubectl apply -f ./k8s/deployment.yaml'
                 }
             }
