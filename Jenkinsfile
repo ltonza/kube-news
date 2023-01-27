@@ -1,10 +1,16 @@
 pipeline {
     agent any
+
+    environment {
+        IMAGE_NAME = 'ltonza/kube-news'
+        TAG_VERSION = "v${env.BUILD_ID}"
+    }
+
     stages {
         stage ('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("ltonza/kube-news:v${env.BUILD_ID}", '-f ./src/Dockerfile ./src')
+                    dockerImage = docker.build("${IMAGE_NAME}:${TAG_VERSION}", '-f ./src/Dockerfile ./src')
                 }
             }
         }
@@ -20,5 +26,14 @@ pipeline {
             }
         }
         
+        stage ('Deploy Kubernetes') {
+            steps {
+                withKubeConfig ([credentialsId: 'kubeconfig']){
+                    sh 'echo "$IMAGE_NAME:$TAG_VERSION"'
+                    sh 'sed -i "s#\($IMAGE_NAME\):.*#\1:$TAG_VERSION#g" ./k8s/deployment.yaml'
+                    sh 'kubectl apply -f ./k8s/deployment.yaml'
+                }
+            }
+        }
     }
 }
