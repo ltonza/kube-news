@@ -39,7 +39,7 @@ spec:
   selector:
     app: kube-news
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: 8088
+      targetPort: 8088
       nodePort: 30001
   type: NodePort
