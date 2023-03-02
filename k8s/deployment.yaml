@@ -39,7 +39,7 @@ spec:
   selector:
     app: kube-news
   ports:
-    - port: 30001
+    - port: 80
       targetPort: 8080
       nodePort: 30001
-  type: NodePort
+  type: ClusterIP
